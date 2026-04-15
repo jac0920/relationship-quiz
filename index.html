@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>你最容易陷入哪种 2026 关系模式？</title>
+    <meta
+      name="description"
+      content="一个适合截图分享的移动端关系测试：6 道题，测出你最容易陷入的 2026 关系模式。"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="bg-orb orb-one"></div>
+      <div class="bg-orb orb-two"></div>
+      <div class="bg-grid"></div>
+
+      <main class="app" id="app">
+        <section class="screen screen-start is-visible is-active" data-screen="start">
+          <div class="hero-card">
+            <p class="eyebrow">Relationship Pattern Quiz 2026</p>
+            <h1>你最容易陷入哪种 2026 关系模式？</h1>
+            <p class="subtitle">为什么你总在同一种关系里循环？</p>
+            <div class="intro-copy">
+              <p>有些人不适合暧昧，</p>
+              <p>有些人却总在同一种关系里反复上头。</p>
+              <p>做完这 6 题，看看你最容易掉进哪一种。</p>
+            </div>
+            <button class="primary-button" id="startButton" type="button">开始测试</button>
+          </div>
+        </section>
+
+        <section class="screen screen-quiz" data-screen="quiz" aria-live="polite">
+          <div class="quiz-frame">
+            <div class="quiz-topbar">
+              <span class="question-index" id="questionIndex">1 / 6</span>
+              <div class="progress-track" aria-hidden="true">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+            </div>
+
+            <article class="question-card">
+              <p class="question-tag">Question</p>
+              <h2 id="questionText"></h2>
+              <div class="options" id="options"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="screen screen-result" data-screen="result" aria-live="polite">
+          <article class="result-card" id="resultCard">
+            <p class="result-label">你的结果是</p>
+            <h2 class="result-title en-title" id="resultTitle"></h2>
+            <p class="result-subtitle" id="resultSubtitle"></p>
+            <p class="result-emotional" id="resultEmotional"></p>
+            <div class="result-grid">
+              <div class="result-block result-block-highlight">
+                <h3>你现在的关系习惯</h3>
+                <p id="resultPattern"></p>
+              </div>
+              <div class="result-block">
+                <h3>你的风险点</h3>
+                <p id="resultRisk"></p>
+              </div>
+              <div class="result-block">
+                <h3>你真正适合的关系</h3>
+                <p id="resultFit"></p>
+              </div>
+            </div>
+            <div class="share-panel">
+              <div class="qr-placeholder" aria-hidden="true">
+                <span>QR</span>
+              </div>
+              <div class="share-copy">
+                <p class="share-title">长按保存结果 或分享给朋友一起测</p>
+                <p class="share-note">扫码位示意，可替换成你的活动二维码。</p>
+              </div>
+            </div>
+            <button class="primary-button primary-button-secondary" id="restartButton" type="button">
+              重新测试
+            </button>
+            <p class="muted-footer">测试结果仅供娱乐</p>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
