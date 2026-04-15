@@ -121,6 +121,7 @@ const state = {
   scores: createEmptyScores(),
   isAdvancing: false,
   activeScreen: "start",
+  transitionTimer: null,
 };
 
 const screens = {
@@ -129,6 +130,7 @@ const screens = {
   result: document.querySelector('[data-screen="result"]'),
 };
 
+const screenStage = document.getElementById("screenStage");
 const startButton = document.getElementById("startButton");
 const restartButton = document.getElementById("restartButton");
 const questionIndex = document.getElementById("questionIndex");
@@ -145,6 +147,11 @@ const resultFit = document.getElementById("resultFit");
 
 startButton.addEventListener("click", startQuiz);
 restartButton.addEventListener("click", resetQuiz);
+window.addEventListener("resize", () => syncStageHeight(screens[state.activeScreen]));
+
+window.requestAnimationFrame(() => {
+  syncStageHeight(screens[state.activeScreen]);
+});
 
 function createEmptyScores() {
   return Object.keys(RESULTS).reduce((accumulator, key) => {
@@ -158,8 +165,8 @@ function startQuiz() {
   state.answers = [];
   state.scores = createEmptyScores();
   state.isAdvancing = false;
-  showScreen("quiz");
   renderQuestion();
+  showScreen("quiz");
 }
 
 function resetQuiz() {
@@ -176,22 +183,32 @@ function showScreen(screenName) {
   const previousScreen = screens[state.activeScreen];
 
   if (previousScreen === nextScreen) {
+    syncStageHeight(nextScreen);
     return;
   }
 
-  nextScreen.classList.add("is-visible");
+  window.clearTimeout(state.transitionTimer);
+  nextScreen.classList.add("is-mounted");
+  syncStageHeight(nextScreen, previousScreen);
+
   window.requestAnimationFrame(() => {
     nextScreen.classList.add("is-active");
+
+    if (previousScreen) {
+      previousScreen.classList.remove("is-active");
+      previousScreen.classList.add("is-exiting");
+    }
   });
 
-  if (previousScreen) {
-    previousScreen.classList.remove("is-active");
-    window.setTimeout(() => {
-      previousScreen.classList.remove("is-visible");
-    }, 280);
-  }
-
   state.activeScreen = screenName;
+  state.transitionTimer = window.setTimeout(() => {
+    if (previousScreen) {
+      previousScreen.classList.remove("is-mounted", "is-exiting");
+    }
+
+    syncStageHeight(nextScreen);
+  }, 320);
+
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -222,14 +239,26 @@ function renderQuestion() {
       button.classList.add("is-selected");
     }
 
+    const badge = document.createElement("span");
+    badge.className = "option-badge";
+    badge.textContent = option.letter;
+
+    const content = document.createElement("span");
+    content.className = "option-content";
+
     const copy = document.createElement("span");
     copy.className = "option-copy";
     copy.textContent = option.text;
-    button.append(copy);
+    content.append(copy);
+    button.append(badge, content);
 
     button.addEventListener("click", () => handleAnswer(option.letter));
     optionsContainer.append(button);
   });
+
+  if (state.activeScreen === "quiz") {
+    syncStageHeight(screens.quiz);
+  }
 }
 
 function handleAnswer(letter) {
@@ -286,4 +315,15 @@ function getWinningResult(scores) {
   }
 
   return RESULT_PRIORITY.find((key) => tied.includes(key));
+}
+
+function syncStageHeight(...screenList) {
+  const validScreens = screenList.filter(Boolean);
+
+  if (!validScreens.length) {
+    return;
+  }
+
+  const tallest = Math.max(...validScreens.map((screen) => screen.scrollHeight));
+  screenStage.style.height = `${tallest}px`;
 }
